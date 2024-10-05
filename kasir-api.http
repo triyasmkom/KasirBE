@@ -1,0 +1,101 @@
+
+
+@jwt = {{login.response.body.token}}
+# Register user
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{
+  "name": "Admin",
+  "email": "admin@example.com",
+  "password": "password",
+  "role": "admin"
+}
+
+###
+# @name login
+# Login user
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "password"
+}
+
+###
+
+# Create product
+POST http://localhost:8080/products
+Content-Type: application/json
+Authorization: {{jwt}}
+
+{
+  "name": "Produk 1",
+  "price": 10000,
+  "stock": 20
+}
+
+###
+
+# Get products
+GET http://localhost:8080/products
+Authorization: {{jwt}}
+
+###
+
+# Get user
+GET http://localhost:8080/users
+Authorization: {{jwt}}
+
+###
+# Add user
+POST http://localhost:8080/users
+Authorization: {{jwt}}
+Content-Type: application/json
+
+{
+  "name": "name 1",
+  "email": "email213@gmail.com",
+  "role": "Admin",
+  "password":"password"
+}
+
+###
+
+# Edit user
+PUT http://localhost:8080/users/4
+Authorization: {{jwt}}
+Content-Type: application/json
+
+{
+  "name": "name 1",
+  "email": "email2@gmail.com",
+  "role": "admin",
+  "password":"12345"
+}
+
+###
+
+# Edit user
+DELETE http://localhost:8080/users/4
+Authorization: {{jwt}}
+
+###
+
+# Create transaction
+POST http://localhost:8080/transactions
+Content-Type: application/json
+Authorization: {{jwt}}
+
+{
+  "product_id": 1,
+  "user_id": 1,
+  "quantity": 2
+}
+
+###
+
+# Get transactions
+GET http://localhost:8080/transactions
+Authorization: {{jwt}}
