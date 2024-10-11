@@ -1,10 +1,13 @@
 package controllers
 
 import (
+	"errors"
+	"fmt"
 	"kasir-backend/auth"
 	"kasir-backend/database"
 	"kasir-backend/models"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -28,8 +31,28 @@ func Register(c *gin.Context) {
 
 	input.Password = string(hashedPassword) // Simpan langsung untuk simplicity
 
-	database.DB.Create(&input)
-	c.JSON(http.StatusOK, gin.H{"data": input})
+	// Insert user baru
+	if err := database.DB.Create(&input).Error; err != nil {
+		// Cek apakah error disebabkan oleh pelanggaran UNIQUE constraint
+		fmt.Print("Tes: ", err)
+		if errors.Is(err, gorm.ErrDuplicatedKey) {
+			fmt.Println("Email sudah terdaftar, silakan gunakan email lain.")
+			c.JSON(http.StatusOK, gin.H{"error": "Email sudah terdaftar, silakan gunakan email lain."})
+			return
+		} else if strings.Contains(err.Error(), "UNIQUE constraint failed: users.email") {
+			fmt.Println("Email sudah terdaftar, silakan gunakan email lain.")
+			c.JSON(http.StatusOK, gin.H{"error": "Email sudah terdaftar, silakan gunakan email lain."})
+			return
+		} else {
+			fmt.Printf("Terjadi kesalahan lain: %v\n", err)
+			c.JSON(http.StatusOK, gin.H{"error": "Terjadi kesalahan lain: \n"})
+			return
+		}
+	} else {
+		fmt.Println("User berhasil ditambahkan.")
+		c.JSON(http.StatusOK, gin.H{"data": input})
+		return
+	}
 }
 
 // Login User

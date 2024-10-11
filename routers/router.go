@@ -26,15 +26,18 @@ func SetupRouter() *gin.Engine {
 	r.POST("/register", controllers.Register)
 	r.POST("/login", controllers.Login)
 
+	r.Use(auth.AuthMiddleware())
+	// User routes (protected)
 	r.GET("/users", controllers.GetUsers)
 	r.POST("/users", controllers.AddUser)
 	r.DELETE("/users/:id", controllers.DeleteUser)
 	r.PUT("/users/:id", controllers.EditUser)
 
 	// Product routes (protected)
-	r.Use(auth.AuthMiddleware())
 	r.POST("/products", controllers.CreateProduct)
 	r.GET("/products", controllers.GetProducts)
+	r.PUT("/products/:id", controllers.EditProduct)
+	r.DELETE("/products/:id", controllers.DeleteProduct)
 
 	// Transaction routes (protected)
 	r.POST("/transactions", controllers.CreateTransaction)

@@ -1,6 +1,7 @@
 
 
 @jwt = {{login.response.body.token}}
+################# AUTH USER ############################
 # Register user
 POST http://localhost:8080/register
 Content-Type: application/json
@@ -24,14 +25,14 @@ Content-Type: application/json
 }
 
 ###
-
+################# PRODUCT ############################
 # Create product
 POST http://localhost:8080/products
 Content-Type: application/json
 Authorization: {{jwt}}
 
 {
-  "name": "Produk 1",
+  "name": "Produk 14",
   "price": 10000,
   "stock": 20
 }
@@ -44,6 +45,24 @@ Authorization: {{jwt}}
 
 ###
 
+PUT http://localhost:8080/products/1
+Content-Type: application/json
+Authorization: {{jwt}}
+
+{
+  "name": "Produk 2",
+  "price": 20000,
+  "stock": 30
+}
+
+###
+
+DELETE http://localhost:8080/products/3
+Authorization: {{jwt}}
+
+###
+
+################# MANAJEMEN USER ############################
 # Get user
 GET http://localhost:8080/users
 Authorization: {{jwt}}
@@ -82,17 +101,25 @@ DELETE http://localhost:8080/users/4
 Authorization: {{jwt}}
 
 ###
-
+################# TRANSAKSI ############################
 # Create transaction
 POST http://localhost:8080/transactions
 Content-Type: application/json
 Authorization: {{jwt}}
 
 {
-  "product_id": 1,
-  "user_id": 1,
-  "quantity": 2
+  "cart": [
+    { "produk": "Produk 2", "harga": 20000 },
+    { "produk": "Produk 1", "harga": 10000 },
+    { "produk": "Produk 1", "harga": 10000 },
+    { "produk": "Product 3", "harga": 2000 },
+    { "produk": "Product 3", "harga": 2000 }
+  ],
+  "total_harga": 44000,
+  "metode_pembayaran": "Tunai",
+  "waktu_transaksi": "2024-10-11T14:05:31.213"
 }
+
 
 ###
 
